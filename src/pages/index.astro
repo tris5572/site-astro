@@ -1,69 +1,53 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import { SITE_TITLE } from "../constants";
+import { CATEGORIES_DATA, CATEGORIES_LIST, SITE_TITLE, type CategoryInfo } from "../constants";
 
-type Article = {
-  title: string;
-  path: string;
-  pubDate: Date;
+type CategoryData = {
+  category: CategoryInfo;
+  articles: {
+    title: string;
+    path: string;
+    pubDate: Date;
+  }[];
 };
 
-const articles: Article[] = [];
-
-const typescriptEntries = await getCollection("typescript", ({ data }) => {
-  return data.publish;
-});
-
-const typescriptArticles: Article[] = typescriptEntries.map((v) => ({
-  title: v.data.title,
-  path: `${v.collection}/${v.slug}`,
-  pubDate: v.data.pubDate,
-}));
+// すべての記事をカテゴリごとに取得する
+const allArticles: CategoryData[] = [];
+for (const cat of CATEGORIES_LIST) {
+  const entries = await getCollection(cat, ({ data }) => {
+    return data.publish;
+  });
+  const articles = entries.map((v) => ({
+    title: v.data.title,
+    path: `${v.collection}/${v.slug}`,
+    pubDate: v.data.pubDate,
+  }));
+  allArticles.push({ category: CATEGORIES_DATA[cat], articles } satisfies CategoryData);
+}
 ---
 
 <Layout title={SITE_TITLE}>
   <main>
-    <div class="category-title">TypeScript</div>
-    <ul>
-      {
-        typescriptArticles.map((v) => {
-          return (
-            <li>
-              <a href={v.path}>{v.title}</a>{" "}
-              <span class="date">({v.pubDate.toISOString().slice(0, 10)})</span>
-            </li>
-          );
-        })
-      }
-    </ul>
-    <!-- <p class="instructions">
-      To get started, open the directory <code>src/pages</code> in your project.<br />
-      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.<br /><br />
-      日本語
-    </p>
-    <ul role="list" class="link-card-grid">
-      <Card
-        href="https://docs.astro.build/"
-        title="Documentation"
-        body="Learn how Astro works and explore the official API docs."
-      />
-      <Card
-        href="https://astro.build/integrations/"
-        title="Integrations"
-        body="Supercharge your project with new frameworks and libraries."
-      />
-      <Card
-        href="https://astro.build/themes/"
-        title="Themes"
-        body="Explore a galaxy of community-built starter themes."
-      />
-      <Card
-        href="https://astro.build/chat/"
-        title="Community"
-        body="Come say hi to our amazing Discord community. ❤️"
-      />
-    </ul> -->
+    {
+      allArticles.map((categoryData) => {
+        return (
+          <>
+            <div class="category-title">{categoryData.category.title}</div>
+            <ul>
+              {categoryData.articles.map((v) => {
+                return (
+                  <li>
+                    <a href={v.path}>{v.title}</a>{" "}
+                    <span class="date">({v.pubDate.toISOString().slice(0, 10)})</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        );
+      })
+    }
   </main>
 </Layout>
 
@@ -74,12 +58,6 @@ const typescriptArticles: Article[] = typescriptEntries.map((v) => ({
     width: 800px;
     max-width: calc(100% - 2rem);
     color: black;
-  }
-  .link-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-    gap: 2rem;
-    padding: 0;
   }
   ul {
     margin-top: 0.2rem;
