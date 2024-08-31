@@ -1,5 +1,7 @@
 ---
 title: "TypeScript のユーティリティ型全部"
+pubDate: 2024-08-30
+publish: true
 ---
 
 TypeScript に用意されているユーティリティ型 (Utility Types) の全部について書く。

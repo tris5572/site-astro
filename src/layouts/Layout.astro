@@ -1,4 +1,6 @@
 ---
+import { SITE_TITLE } from "../constants";
+
 interface Props {
   title: string;
 }
@@ -17,9 +19,13 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
   <body>
+    <header><a href="/"><div id="title">{SITE_TITLE}</div></a></header>
     <div id="layout-wrapper">
       <slot />
     </div>
@@ -84,5 +90,17 @@ const { title } = Astro.props;
   .astro-code {
     padding: 8px;
     border-radius: 4px;
+  }
+</style>
+<style>
+  header {
+    text-align: center;
+  }
+  #title {
+    color: white;
+    font-size: 2rem;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: italic;
   }
 </style>
