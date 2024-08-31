@@ -25,7 +25,7 @@ const { Content } = await entry.render();
   <div class="lines-bottom" id="line7"></div>
   <div class="lines-bottom" id="line8"></div>
   <div class="lines-bottom" id="line9"></div>
-  <div id="date">作成日：{entry.data.pubDate.toISOString().slice(0, 10)}</div>
+  <div id="date">{entry.data.pubDate.toISOString().slice(0, 10)}</div>
   <Content />
 </Layout>
 
