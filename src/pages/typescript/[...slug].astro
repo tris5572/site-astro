@@ -1,21 +1,21 @@
 ---
-import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { getTitle } from "../../utils";
 
-// 1. コレクションエントリーごとに新しいパスを生成
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('typescript');
-  return blogEntries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+  const blogEntries = await getCollection("typescript");
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
   }));
 }
-// 2. テンプレートでは、プロパティからエントリーを直接取得できる
+
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title={getTitle(entry.data.title)}>
   <h1>{entry.data.title}</h1>
-<Content />
+  <Content />
 </Layout>
-
